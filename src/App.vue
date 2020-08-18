@@ -1,7 +1,8 @@
 <template>
   <v-app>
+    <Navbar />
     <v-main>
-      <v-container fill-height fluid id="app-container">
+      <v-container fluid id="app-container">
         <router-view />
       </v-container>
     </v-main>
@@ -12,20 +13,27 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Action } from "vuex-class";
 import { AuthActions } from "@/types/auth";
+import Navbar from "@/components/Navbar.vue";
 
-@Component
+@Component({
+  components: {
+    Navbar
+  }
+})
 export default class App extends Vue {
   @Action(AuthActions.SetAxiosHeader) private setAxiosHeader!: Function;
+  @Action(AuthActions.VerifyToken) private verifyToken!: Function;
 
   beforeMount() {
     this.setAxiosHeader();
+    this.verifyToken();
   }
 }
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Prompt", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

@@ -1,6 +1,5 @@
 import Vue from "vue";
 import { ActionTree, GetterTree, Module, MutationTree } from "vuex";
-import { RootState } from "@/types/root";
 import {
   AuthActions,
   AuthGetters,
@@ -8,34 +7,39 @@ import {
   AuthState,
   LoginCredentials
 } from "@/types/auth";
-import { User } from '@/types/user';
-import router from '@/router';
+import { User } from "@/types/user";
+import router from "@/router";
 
 const state: AuthState = {
   token: null,
   user: null
 };
 
-const getters: GetterTree<AuthState, RootState> = {
-  [AuthGetters.IsLogin]: state => !!state.token
+const getters: GetterTree<AuthState, AuthState> = {
+  [AuthGetters.IsLogin]: state => !!state.token,
+  [AuthGetters.GetToken]: state => state.token
+  // [AuthGetters.IsLogin]: state => false
 };
 
 const mutations: MutationTree<AuthState> = {
   [AuthMutations.SetToken]: (state: AuthState, token: string | null) => {
     state.token = token;
+  },
+  [AuthMutations.SetUser]: (state: AuthState, user: User | null) => {
+    state.user = user;
   }
 };
 
-const actions: ActionTree<AuthState, RootState> = {
+const actions: ActionTree<AuthState, AuthState> = {
   [AuthActions.Login]: async (
     { commit, dispatch },
     credentials: LoginCredentials
   ) => {
     try {
       const response = await Vue.axios.post<string>("/auth/login", credentials);
-      dispatch(AuthActions.SetToken, response.data);
-      dispatch(AuthActions.SetAxiosHeader);
-      dispatch(AuthActions.Redirect);
+      await dispatch(AuthActions.SetToken, response.data);
+      await dispatch(AuthActions.SetAxiosHeader);
+      await dispatch(AuthActions.Redirect);
     } catch (e) {
       console.error(e);
     }
@@ -43,12 +47,13 @@ const actions: ActionTree<AuthState, RootState> = {
   [AuthActions.Logout]: async ({ commit, dispatch }) => {
     commit(AuthMutations.SetToken, null);
     commit(AuthMutations.SetUser, null);
-    router.push("/login")
+    await dispatch(AuthActions.ClearHeaderToken);
+    router.push("/login");
   },
-  [AuthActions.SetToken]: async ({commit}, token: string | null) => {
+  [AuthActions.SetToken]: async ({ commit }, token: string | null) => {
     commit(AuthMutations.SetToken, token);
   },
-  [AuthActions.SetAxiosHeader]: async ({ state }) => {
+  [AuthActions.SetAxiosHeader]: ({ state }) => {
     if (state.token) {
       Vue.axios.defaults.headers.common[
         "Authorization"
@@ -58,18 +63,91 @@ const actions: ActionTree<AuthState, RootState> = {
   [AuthActions.ClearHeaderToken]: async () => {
     Vue.axios.defaults.headers.common["Authorization"] = null;
   },
-  [AuthActions.Redirect]: async ({commit}) => {
-    const response = await Vue.axios.get<User>("user/self");
-    commit(AuthMutations.SetUser, response.data);
-    router.push("/");
+  [AuthActions.Redirect]: async ({ commit, dispatch }) => {
+    try {
+      await dispatch(AuthActions.VerifyToken);
+      router.push("/");
+    } catch (e) {
+      await dispatch(AuthActions.Logout);
+    }
+  },
+  [AuthActions.VerifyToken]: async ({ state, commit, dispatch }) => {
+    try {
+      if (state.token) {
+        const response = await Vue.axios.get<User>("user/self");
+        commit(AuthMutations.SetUser, response.data);
+      } else {
+        await dispatch(AuthActions.Logout);
+      }
+    } catch (e) {
+      await dispatch(AuthActions.Logout);
+    }
   }
 };
 
-const auth: Module<AuthState, RootState> = {
+const auth: Module<AuthState, AuthState> = {
   state,
   getters,
   mutations,
   actions
 };
 
+// const auth: StoreOptions<AuthState> = {
+//   state: {
+//     token: null,
+//     user: null
+//   },
+//   getters: {
+//     // [AuthGetters.IsLogin]: state => !!state.token
+//     [AuthGetters.IsLogin]: state => false
+//   },
+//   mutations: {
+//     [AuthMutations.SetToken]: (state: AuthState, token: string | null) => {
+//       state.token = token;
+//     },
+//     [AuthMutations.SetUser]: (state:AuthState, user: User | null) => {
+//       state.user = user;
+//     }
+//   },
+//   actions: {
+//     [AuthActions.Login]: async (
+//         { commit, dispatch },
+//         credentials: LoginCredentials
+//     ) => {
+//       try {
+//         const response = await Vue.axios.post<string>("/auth/login", credentials);
+//         dispatch(AuthActions.SetToken, response.data);
+//         dispatch(AuthActions.SetAxiosHeader);
+//         dispatch(AuthActions.Redirect);
+//       } catch (e) {
+//         console.error(e);
+//       }
+//     },
+//     [AuthActions.Logout]: async ({ commit, dispatch }) => {
+//       commit(AuthMutations.SetToken, null);
+//       commit(AuthMutations.SetUser, null);
+//       dispatch(AuthActions.ClearHeaderToken);
+//       router.push("/login")
+//     },
+//     [AuthActions.SetToken]: async ({commit}, token: string | null) => {
+//       commit(AuthMutations.SetToken, token);
+//     },
+//     [AuthActions.SetAxiosHeader]: async ({ state }) => {
+//       if (state.token) {
+//         Vue.axios.defaults.headers.common[
+//             "Authorization"
+//             ] = `Bearer ${state.token}`;
+//       }
+//     },
+//     [AuthActions.ClearHeaderToken]: async () => {
+//       Vue.axios.defaults.headers.common["Authorization"] = null;
+//     },
+//     [AuthActions.Redirect]: async ({commit}) => {
+//       const response = await Vue.axios.get<User>("user/self");
+//       console.log(response);
+//       commit(AuthMutations.SetUser, response.data);
+//       router.push("/");
+//     }
+//   }
+// }
 export default auth;

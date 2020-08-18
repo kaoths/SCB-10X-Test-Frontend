@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
-import auth from "@/store/modules/auth";
+import store from "@/store";
 import { AuthGetters } from "@/types/auth";
 
 Vue.use(VueRouter);
@@ -26,6 +26,16 @@ const routes: Array<RouteConfig> = [
     name: "Login",
     component: () =>
       import(/* webpackChunkName: "login" */ "../views/Login.vue")
+  },
+  {
+    path: "/party/list",
+    name: "Party-List",
+    component: () =>
+      import(/* webpackChunkName: "larty-list" */ "../views/party/List.vue")
+  },
+  {
+    path: "/party/create",
+    name: "Party-Create"
   }
 ];
 
@@ -36,15 +46,9 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.protected && !auth.getters![AuthGetters.IsLogin]) {
-    next("/login");
-  }
-  else if (to.path === "/login" && auth.getters![AuthGetters.IsLogin]) {
-    next("/")
-  }
-  else {
-    next();
-  }
+  const isAuthenticated = !!store.state.auth.token;
+  if (to.name !== "Login" && !isAuthenticated) next({ name: "Login" });
+  else next();
 });
 
 export default router;

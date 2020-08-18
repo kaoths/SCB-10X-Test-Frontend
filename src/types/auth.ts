@@ -9,6 +9,7 @@ export enum AuthActions {
   Login = "Login",
   Logout = "Logout",
   SetToken = "SetToken",
+  VerifyToken = "VerifyToken",
   SetAxiosHeader = "SetAxiosHeader",
   ClearHeaderToken = "ClearHeaderToken",
   Redirect = "Redirect"
@@ -20,7 +21,8 @@ export enum AuthMutations {
 }
 
 export enum AuthGetters {
-  IsLogin = "IsLogin"
+  IsLogin = "IsLogin",
+  GetToken = "GetToken"
 }
 export interface LoginCredentials {
   username: string;

@@ -1,18 +1,17 @@
 import { ActionTree, GetterTree, Module, MutationTree } from "vuex";
 import { UserActions, UserState } from "@/types/user";
-import { RootState } from "@/types/root";
 
 const state: UserState = {
   username: ""
 };
 
-const getters: GetterTree<UserState, RootState> = {};
+const getters: GetterTree<UserState, UserState> = {};
 
 const mutations: MutationTree<UserState> = {};
 
-const actions: ActionTree<UserState, RootState> = {};
+const actions: ActionTree<UserState, UserState> = {};
 
-const user: Module<UserState, RootState> = {
+const user: Module<UserState, UserState> = {
   state,
   getters,
   mutations,
