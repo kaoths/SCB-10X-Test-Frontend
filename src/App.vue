@@ -1,12 +1,27 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
-  </div>
+  <v-app>
+    <v-main>
+      <v-container fill-height fluid id="app-container">
+        <router-view />
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
+
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+import { Action } from "vuex-class";
+import { AuthActions } from "@/types/auth";
+
+@Component
+export default class App extends Vue {
+  @Action(AuthActions.SetAxiosHeader) private setAxiosHeader!: Function;
+
+  beforeMount() {
+    this.setAxiosHeader();
+  }
+}
+</script>
 
 <style>
 #app {
