@@ -18,7 +18,6 @@ const state: AuthState = {
 const getters: GetterTree<AuthState, AuthState> = {
   [AuthGetters.IsLogin]: state => !!state.token,
   [AuthGetters.GetToken]: state => state.token
-  // [AuthGetters.IsLogin]: state => false
 };
 
 const mutations: MutationTree<AuthState> = {
@@ -92,62 +91,4 @@ const auth: Module<AuthState, AuthState> = {
   actions
 };
 
-// const auth: StoreOptions<AuthState> = {
-//   state: {
-//     token: null,
-//     user: null
-//   },
-//   getters: {
-//     // [AuthGetters.IsLogin]: state => !!state.token
-//     [AuthGetters.IsLogin]: state => false
-//   },
-//   mutations: {
-//     [AuthMutations.SetToken]: (state: AuthState, token: string | null) => {
-//       state.token = token;
-//     },
-//     [AuthMutations.SetUser]: (state:AuthState, user: User | null) => {
-//       state.user = user;
-//     }
-//   },
-//   actions: {
-//     [AuthActions.Login]: async (
-//         { commit, dispatch },
-//         credentials: LoginCredentials
-//     ) => {
-//       try {
-//         const response = await Vue.axios.post<string>("/auth/login", credentials);
-//         dispatch(AuthActions.SetToken, response.data);
-//         dispatch(AuthActions.SetAxiosHeader);
-//         dispatch(AuthActions.Redirect);
-//       } catch (e) {
-//         console.error(e);
-//       }
-//     },
-//     [AuthActions.Logout]: async ({ commit, dispatch }) => {
-//       commit(AuthMutations.SetToken, null);
-//       commit(AuthMutations.SetUser, null);
-//       dispatch(AuthActions.ClearHeaderToken);
-//       router.push("/login")
-//     },
-//     [AuthActions.SetToken]: async ({commit}, token: string | null) => {
-//       commit(AuthMutations.SetToken, token);
-//     },
-//     [AuthActions.SetAxiosHeader]: async ({ state }) => {
-//       if (state.token) {
-//         Vue.axios.defaults.headers.common[
-//             "Authorization"
-//             ] = `Bearer ${state.token}`;
-//       }
-//     },
-//     [AuthActions.ClearHeaderToken]: async () => {
-//       Vue.axios.defaults.headers.common["Authorization"] = null;
-//     },
-//     [AuthActions.Redirect]: async ({commit}) => {
-//       const response = await Vue.axios.get<User>("user/self");
-//       console.log(response);
-//       commit(AuthMutations.SetUser, response.data);
-//       router.push("/");
-//     }
-//   }
-// }
 export default auth;

@@ -3,6 +3,7 @@ export interface Party {
   title: string;
   total: number;
   members: string[];
+  joined?: boolean;
 }
 
 export interface PartyState {
@@ -15,12 +16,19 @@ export interface PartyState {
 
 export enum PartyActions {
   FetchAll = "FetchAllParty",
-  FetchJoined = "FetchJoinedParty"
+  JoinParty = "JoinParty",
+  LeaveParty = "LeaveParty",
 }
 
 export enum PartyMutations {
   Loading = "SetPartyLoading",
   Success = "SetPartySuccess",
   Error = "SetPartyError",
-  SetParties = "SetParties"
+  SetAllParties = "SetAllParties",
+}
+
+export enum PartyGetters {
+  GetAllParties = "GetAllParties",
+  GetJoinedParties = "GetJoinedParties",
+  GetNotJoinedParties = "GetNotJoinedParties"
 }
