@@ -1,7 +1,10 @@
-export interface Party {
-  _id: string;
+export interface PartyDTO {
   title: string;
   total: number;
+}
+
+export interface Party extends PartyDTO {
+  _id: string;
   members: string[];
   owner: string;
   isOwner: boolean;
@@ -21,9 +24,10 @@ export enum PartyActions {
   FetchAll = "FetchAllParty",
   FetchOne = "FetchOneParty",
   CreateParty = "CreateParty",
+  EditParty = "EditParty",
   DeleteParty = "DeleteParty",
   JoinParty = "JoinParty",
-  LeaveParty = "LeaveParty",
+  LeaveParty = "LeaveParty"
 }
 
 export enum PartyMutations {
@@ -37,5 +41,6 @@ export enum PartyMutations {
 export enum PartyGetters {
   GetAllParties = "GetAllParties",
   GetJoinedParties = "GetJoinedParties",
-  GetNotJoinedParties = "GetNotJoinedParties"
+  GetNotJoinedParties = "GetNotJoinedParties",
+  GetOwnedParties = "GetOwnedParties"
 }

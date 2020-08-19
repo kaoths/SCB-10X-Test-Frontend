@@ -30,7 +30,7 @@ const routes: Array<RouteConfig> = [
     path: "/register",
     name: "Register",
     component: () =>
-        import(/* webpackChunkName: "register" */ "../views/Register.vue")
+      import(/* webpackChunkName: "register" */ "../views/Register.vue")
   },
   {
     path: "/party/list",
@@ -42,13 +42,13 @@ const routes: Array<RouteConfig> = [
     path: "/party/create",
     name: "Party-Create",
     component: () =>
-        import(/* webpackChunkName: "party-create" */ "../views/party/Create.vue")
+      import(/* webpackChunkName: "party-create" */ "../views/party/Create.vue")
   },
   {
     path: "/party/:id/edit",
     name: "Party-Edit",
-    component:() =>
-        import(/* webpackChunkName: "party-edit" */ "../views/party/Edit.vue")
+    component: () =>
+      import(/* webpackChunkName: "party-edit" */ "../views/party/Edit.vue")
   }
 ];
 
@@ -60,17 +60,12 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const isAuthenticated = !!store.state.auth.token;
-  // if (to.name === "Register" && !isAuthenticated) next({ name: "Register" });
-  // else if (to.name !== "Login"  && !isAuthenticated) next({ name: "Login" });
-  // else if ((to.name === "Register" || to.name === "Login") && isAuthenticated) next({ name: "Home" });
-  // else next();
-
   if (to.name === "Register" || to.name === "Login") {
-    if (isAuthenticated) next({ name: "Party-List" })
-    else next()
+    if (isAuthenticated) next({ name: "Party-List" });
+    else next();
   } else {
-    if (isAuthenticated) next()
-    else next({ name: "Login" })
+    if (isAuthenticated) next();
+    else next({ name: "Login" });
   }
 });
 

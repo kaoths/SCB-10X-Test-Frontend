@@ -1,8 +1,12 @@
 <template>
   <v-app-bar color="primary" dark height="60px" app>
-    <v-toolbar-title class="clickable" @click="$router.push('/')">PartyHaan</v-toolbar-title>
+    <v-toolbar-title class="clickable" @click="$router.push('/')"
+      >PartyHaan</v-toolbar-title
+    >
     <v-spacer />
-    <v-btn v-if="!isLogin" @click="$router.push('/login')" text>เข้าสู่ระบบ</v-btn>
+    <v-btn v-if="!isLogin" @click="$router.push('/login')" text
+      >เข้าสู่ระบบ</v-btn
+    >
     <v-menu v-else offset-y>
       <template v-slot:activator="{ on, attrs }">
         <v-btn text v-bind="attrs" v-on="on">
@@ -11,12 +15,16 @@
       </template>
       <v-list>
         <v-list-item>
-          <v-list-item-title>ข้อมูลส่วนตัว</v-list-item-title>
+          <v-list-item-title>
+            ข้อมูลส่วนตัว
+            <v-icon class="ml-1 black--text">mdi-account-details</v-icon>
+          </v-list-item-title>
         </v-list-item>
-        <v-list-item
-          @click="logout"
-        >
-          <v-list-item-title>ออกจากระบบ</v-list-item-title>
+        <v-list-item @click="logout">
+          <v-list-item-title>
+            ออกจากระบบ
+            <v-icon class="ml-1 black--text">mdi-logout</v-icon>
+          </v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>

@@ -23,7 +23,13 @@
 
           <v-card-actions class="pa-6 pt-0">
             <v-row justify="center" class="w-100">
-              <v-btn color="primary" type="submit">
+              <v-btn
+                class="px-2"
+                color="primary lighten-1"
+                type="submit"
+                :disabled="!submitable"
+              >
+                <v-icon class="mr-1">mdi-login</v-icon>
                 เข้าสู่ระบบ
               </v-btn>
             </v-row>
@@ -31,7 +37,12 @@
         </v-form>
       </v-card>
 
-      <v-btn class="mt-5" color="success" @click="$router.push('/register')">
+      <v-btn
+        class="mt-5 px-2"
+        color="success"
+        @click="$router.push('/register')"
+      >
+        <v-icon class="mr-1">mdi-account-plus</v-icon>
         สร้างบัญชีผู้ใช้
       </v-btn>
     </v-col>
@@ -42,11 +53,11 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Action } from "vuex-class";
 import { AuthActions } from "@/types/auth";
+
 @Component
 export default class Login extends Vue {
   @Action(AuthActions.Login) private login!: Function;
 
-  private email = "";
   private username = "";
   private password = "";
 
@@ -55,6 +66,10 @@ export default class Login extends Vue {
       username: this.username,
       password: this.password
     });
+  }
+
+  get submitable() {
+    return this.username && this.password;
   }
 }
 </script>

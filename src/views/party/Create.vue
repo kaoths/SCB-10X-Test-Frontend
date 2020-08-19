@@ -5,21 +5,13 @@
       <v-card elevation="8">
         <v-form @submit.prevent="submit">
           <v-card-text class="px-6">
-            <v-text-field
-              v-model="title"
-              type="text"
-              label="ชื่อปาร์ตี้ *"
-            />
-            <v-text-field
-              v-model="total"
-              type="text"
-              label="จำนวน *"
-            />
+            <v-text-field v-model="title" type="text" label="ชื่อปาร์ตี้ *" />
+            <v-text-field v-model="total" type="text" label="จำนวน *" />
           </v-card-text>
 
           <v-card-actions class="pa-6 pt-0">
             <v-row justify="center" class="w-100">
-              <v-btn color="primary" type="submit" :disabled="!submitable">
+              <v-btn color="success" type="submit" :disabled="!submitable">
                 สร้างปาร์ตี้
               </v-btn>
             </v-row>
@@ -43,12 +35,10 @@ export default class CreateParty extends Vue {
   private total: number | null = null;
 
   submit() {
-    this.createParty(
-        {
-          title: this.title,
-          total: this.total
-        }
-    )
+    this.createParty({
+      title: this.title,
+      total: this.total
+    });
   }
 
   get submitable() {

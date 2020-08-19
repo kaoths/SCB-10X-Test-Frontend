@@ -15,7 +15,7 @@ const state: AuthState = {
   user: null
 };
 
-const getters: GetterTree<AuthState, AuthState> = {
+const getters: GetterTree<AuthState, any> = {
   [AuthGetters.IsLogin]: state => !!state.token,
   [AuthGetters.GetToken]: state => state.token
 };
@@ -29,7 +29,7 @@ const mutations: MutationTree<AuthState> = {
   }
 };
 
-const actions: ActionTree<AuthState, AuthState> = {
+const actions: ActionTree<AuthState, any> = {
   [AuthActions.Login]: async (
     { commit, dispatch },
     credentials: LoginCredentials
@@ -44,8 +44,11 @@ const actions: ActionTree<AuthState, AuthState> = {
     }
   },
   [AuthActions.Register]: async ({ commit, dispatch }, credentials) => {
-    try{
-      const response = await Vue.axios.post<string>("/auth/register", credentials);
+    try {
+      const response = await Vue.axios.post<string>(
+        "/auth/register",
+        credentials
+      );
       await dispatch(AuthActions.SetToken, response.data);
       await dispatch(AuthActions.SetAxiosHeader);
       await dispatch(AuthActions.Redirect);
@@ -94,7 +97,7 @@ const actions: ActionTree<AuthState, AuthState> = {
   }
 };
 
-const auth: Module<AuthState, AuthState> = {
+const auth: Module<AuthState, any> = {
   state,
   getters,
   mutations,

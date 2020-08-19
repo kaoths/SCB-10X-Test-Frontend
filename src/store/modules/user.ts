@@ -5,13 +5,13 @@ const state: UserState = {
   username: ""
 };
 
-const getters: GetterTree<UserState, UserState> = {};
+const getters: GetterTree<UserState, any> = {};
 
 const mutations: MutationTree<UserState> = {};
 
-const actions: ActionTree<UserState, UserState> = {};
+const actions: ActionTree<UserState, any> = {};
 
-const user: Module<UserState, UserState> = {
+const user: Module<UserState, any> = {
   state,
   getters,
   mutations,

@@ -11,10 +11,20 @@
         ></v-select>
       </v-col>
       <v-col cols="auto">
-        <v-btn color="green lighten-1" @click="$router.push('/party/create')">สร้างปาร์ตี้</v-btn>
+        <v-btn
+          class="px-2"
+          color="success"
+          @click="$router.push('/party/create')"
+        >
+          สร้างปาร์ตี้
+          <v-icon class="ml-1">mdi-new-box</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row justify="center" v-if="partyList.length === 0">
+      <div>- ไม่พบข้อมูล -</div>
+    </v-row>
+    <v-row v-else>
       <v-col cols="6" md="3" lg="2" v-for="party in partyList" :key="party._id">
         <v-card class="d-flex flex-column justify-space-between" height="100%">
           <div>
@@ -34,13 +44,39 @@
               <div>{{ party.members.length }} / {{ party.total }} คน</div>
 
               <v-card-actions>
-                <v-btn v-if="party.owner" if="!party.joined" color="red lighten-2" @click="$router.push(`/party/${party._id}/edit`)">
+                <v-btn
+                  v-if="party.isOwner"
+                  if="!party.joined"
+                  color="orange lighten-1"
+                  class="white--text"
+                  @click="$router.push(`/party/${party._id}/edit`)"
+                >
+                  <v-icon class="mr-1" small>mdi-wrench</v-icon>
                   แก้ไข
                 </v-btn>
-                <v-btn v-else-if="!party.joined" color="green lighten-2" @click="joinParty(party)">
-                  เข้าร่วม
+                <v-btn
+                  v-else-if="!party.joined"
+                  color="green lighten-2"
+                  class="white--text"
+                  @click="joinParty(party)"
+                  :disabled="party.members.length === party.total"
+                >
+                  <div v-if="party.members.length === party.total">
+                    <v-icon small>mdi-close-circle-outline</v-icon>
+                    เต็ม
+                  </div>
+                  <div v-else>
+                    <v-icon small>mdi-plus-circle-outline</v-icon>
+                    เข้าร่วม
+                  </div>
                 </v-btn>
-                <v-btn v-else color="orange lighten-2" @click="leaveParty(party)">
+                <v-btn
+                  v-else
+                  color="red lighten-2"
+                  class="white--text"
+                  @click="leaveParty(party)"
+                >
+                  <v-icon class="mr-1" small>mdi-minus-circle-outline</v-icon>
                   ออก
                 </v-btn>
               </v-card-actions>
@@ -62,6 +98,7 @@ export default class PartyList extends Vue {
   @Getter(PartyGetters.GetAllParties) private allParties!: Party[];
   @Getter(PartyGetters.GetJoinedParties) private joinedParties!: Party[];
   @Getter(PartyGetters.GetNotJoinedParties) private notJoinedParties!: Party[];
+  @Getter(PartyGetters.GetOwnedParties) private ownedParties!: Party[];
   @Action(PartyActions.FetchAll) private fetchAllParties!: Function;
   @Action(PartyActions.DeleteParty) private deleteParty!: Function;
   @Action(PartyActions.JoinParty) private joinParty!: Function;
@@ -72,7 +109,8 @@ export default class PartyList extends Vue {
   private filterOptions = [
     { text: "ทั้งหมด", value: "all" },
     { text: "ที่เข้าร่วม", value: "joined" },
-    { text: "ที่ยังไม่เข้าร่วม", value: "notJoined" }
+    { text: "ที่ยังไม่เข้าร่วม", value: "notJoined" },
+    { text: "ที่เป็นเจ้าของ", value: "owned" }
   ];
 
   mounted() {
@@ -87,6 +125,8 @@ export default class PartyList extends Vue {
         return this.joinedParties;
       case "notJoined":
         return this.notJoinedParties;
+      case "owned":
+        return this.ownedParties;
       default:
         return [];
     }
@@ -94,4 +134,8 @@ export default class PartyList extends Vue {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+v-btn {
+  color: white;
+}
+</style>
