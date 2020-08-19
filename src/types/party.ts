@@ -3,10 +3,13 @@ export interface Party {
   title: string;
   total: number;
   members: string[];
+  owner: string;
+  isOwner: boolean;
   joined?: boolean;
 }
 
 export interface PartyState {
+  party: Party | null;
   parties: Party[];
   isLoading: boolean;
   isSuccess: boolean;
@@ -16,6 +19,9 @@ export interface PartyState {
 
 export enum PartyActions {
   FetchAll = "FetchAllParty",
+  FetchOne = "FetchOneParty",
+  CreateParty = "CreateParty",
+  DeleteParty = "DeleteParty",
   JoinParty = "JoinParty",
   LeaveParty = "LeaveParty",
 }
@@ -25,6 +31,7 @@ export enum PartyMutations {
   Success = "SetPartySuccess",
   Error = "SetPartyError",
   SetAllParties = "SetAllParties",
+  SetParty = "SetParty"
 }
 
 export enum PartyGetters {

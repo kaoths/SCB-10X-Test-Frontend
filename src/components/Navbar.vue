@@ -1,13 +1,25 @@
 <template>
   <v-app-bar color="primary" dark height="60px" app>
-    <v-toolbar-title>PartyHaan</v-toolbar-title>
-    <v-btn text class="ml-3" @click="$router.push('/')">Home</v-btn>
+    <v-toolbar-title class="clickable" @click="$router.push('/')">PartyHaan</v-toolbar-title>
     <v-spacer />
-    <v-btn v-if="!isLogin" to="/login" outlined>Login / Sign Up</v-btn>
-    <v-btn v-if="isLogin" icon to="/profile/me">
-      <v-icon large>mdi-account-circle</v-icon>
-    </v-btn>
-    <v-btn v-if="isLogin" @click="logout" outlined>Log Out</v-btn>
+    <v-btn v-if="!isLogin" @click="$router.push('/login')" text>เข้าสู่ระบบ</v-btn>
+    <v-menu v-else offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn text v-bind="attrs" v-on="on">
+          <v-icon>mdi-menu</v-icon>
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item>
+          <v-list-item-title>ข้อมูลส่วนตัว</v-list-item-title>
+        </v-list-item>
+        <v-list-item
+          @click="logout"
+        >
+          <v-list-item-title>ออกจากระบบ</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-app-bar>
 </template>
 
@@ -20,7 +32,13 @@ import { AuthActions, AuthGetters } from "@/types/auth";
 export default class Navbar extends Vue {
   @Getter(AuthGetters.IsLogin) private isLogin!: () => boolean;
   @Action(AuthActions.Logout) private logout!: () => void;
+
+  private menus = [{ title: "ข้อมูลส่วนตัว" }, { title: "ออกจากระบบ" }];
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.clickable:hover {
+  cursor: pointer;
+}
+</style>

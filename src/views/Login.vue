@@ -30,6 +30,10 @@
           </v-card-actions>
         </v-form>
       </v-card>
+
+      <v-btn class="mt-5" color="success" @click="$router.push('/register')">
+        สร้างบัญชีผู้ใช้
+      </v-btn>
     </v-col>
   </v-row>
 </template>

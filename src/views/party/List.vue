@@ -11,7 +11,7 @@
         ></v-select>
       </v-col>
       <v-col cols="auto">
-        <v-btn color="green lighten-1">สร้างปาร์ตี้</v-btn>
+        <v-btn color="green lighten-1" @click="$router.push('/party/create')">สร้างปาร์ตี้</v-btn>
       </v-col>
     </v-row>
     <v-row>
@@ -34,10 +34,13 @@
               <div>{{ party.members.length }} / {{ party.total }} คน</div>
 
               <v-card-actions>
-                <v-btn v-if="!party.joined" color="green lighten-2" @click="joinParty(party)">
+                <v-btn v-if="party.owner" if="!party.joined" color="red lighten-2" @click="$router.push(`/party/${party._id}/edit`)">
+                  แก้ไข
+                </v-btn>
+                <v-btn v-else-if="!party.joined" color="green lighten-2" @click="joinParty(party)">
                   เข้าร่วม
                 </v-btn>
-                <v-btn v-else color="red lighten-2" @click="leaveParty(party)">
+                <v-btn v-else color="orange lighten-2" @click="leaveParty(party)">
                   ออก
                 </v-btn>
               </v-card-actions>
@@ -60,6 +63,7 @@ export default class PartyList extends Vue {
   @Getter(PartyGetters.GetJoinedParties) private joinedParties!: Party[];
   @Getter(PartyGetters.GetNotJoinedParties) private notJoinedParties!: Party[];
   @Action(PartyActions.FetchAll) private fetchAllParties!: Function;
+  @Action(PartyActions.DeleteParty) private deleteParty!: Function;
   @Action(PartyActions.JoinParty) private joinParty!: Function;
   @Action(PartyActions.LeaveParty) private leaveParty!: Function;
 

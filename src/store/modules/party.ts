@@ -6,9 +6,10 @@ import {
   PartyMutations,
   PartyState,
 } from "@/types/party";
-import user from "@/store/modules/user";
+import router from "@/router";
 
 const state: PartyState = {
+  party: null,
   parties: [],
   isLoading: false,
   isSuccess: false,
@@ -42,6 +43,9 @@ const mutations: MutationTree<PartyState> = {
   [PartyMutations.SetAllParties]: (state, payload: Party[]) => {
     state.parties = payload;
   },
+  [PartyMutations.SetParty]: (state, payload: Party) => {
+    state.party = payload;
+  },
 };
 
 const actions: ActionTree<PartyState, any> = {
@@ -53,13 +57,39 @@ const actions: ActionTree<PartyState, any> = {
       const payload = response.data.map(party => {
         return {
           ...party,
-          joined: party.members.includes(userId)
+          joined: party.members.includes(userId),
+          isOwner: party.owner === userId
         }
       });
       commit(PartyMutations.SetAllParties, payload);
       commit(PartyMutations.Success);
     } catch (e) {
       commit(PartyMutations.Error, e.response.data.message);
+      console.error(e);
+    }
+  },
+  [PartyActions.FetchOne]: async({ commit, dispatch }, partyId: string) => {
+    try {
+      const response = await Vue.axios.get<Party>(`/party/${partyId}`)
+      commit(PartyMutations.SetParty, response.data)
+    } catch (e) {
+      console.log(e);
+    }
+  },
+  [PartyActions.CreateParty]: async  ({ commit , dispatch}, partyDto) => {
+    try {
+      const response = Vue.axios.post<Party>('/party', partyDto);
+      await dispatch(PartyActions.FetchAll);
+      await router.push('/party/list')
+    } catch (e) {
+      console.error(e);
+    }
+  },
+  [PartyActions.DeleteParty]: async  ({ commit , dispatch}, partyId) => {
+    try {
+      const response = await Vue.axios.delete<Party>(`/party/${partyId}`);
+      await dispatch(PartyActions.FetchAll);
+    } catch (e) {
       console.error(e);
     }
   },
