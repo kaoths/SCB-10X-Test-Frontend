@@ -1,7 +1,7 @@
 <template>
   <v-app-bar color="primary" dark height="60px" app>
     <v-toolbar-title class="clickable" @click="$router.push('/')"
-      >PartyHaan</v-toolbar-title
+      >SCB-10X-SE-Assignment</v-toolbar-title
     >
     <v-spacer />
     <v-btn v-if="!isLogin" @click="$router.push('/login')" text
