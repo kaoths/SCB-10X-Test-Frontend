@@ -8,6 +8,7 @@ export interface AuthState {
 export enum AuthActions {
   Login = "Login",
   Logout = "Logout",
+  Register = "Register",
   SetToken = "SetToken",
   VerifyToken = "VerifyToken",
   SetAxiosHeader = "SetAxiosHeader",

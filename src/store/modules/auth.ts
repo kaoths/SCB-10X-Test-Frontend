@@ -43,6 +43,16 @@ const actions: ActionTree<AuthState, AuthState> = {
       console.error(e);
     }
   },
+  [AuthActions.Register]: async ({ commit, dispatch }, credentials) => {
+    try{
+      const response = await Vue.axios.post<string>("/auth/register", credentials);
+      await dispatch(AuthActions.SetToken, response.data);
+      await dispatch(AuthActions.SetAxiosHeader);
+      await dispatch(AuthActions.Redirect);
+    } catch (e) {
+      console.error(e);
+    }
+  },
   [AuthActions.Logout]: async ({ commit, dispatch }) => {
     commit(AuthMutations.SetToken, null);
     commit(AuthMutations.SetUser, null);

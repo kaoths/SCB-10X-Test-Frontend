@@ -2,7 +2,6 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import store from "@/store";
-import { AuthGetters } from "@/types/auth";
 
 Vue.use(VueRouter);
 
@@ -28,6 +27,12 @@ const routes: Array<RouteConfig> = [
       import(/* webpackChunkName: "login" */ "../views/Login.vue")
   },
   {
+    path: "/register",
+    name: "Register",
+    component: () =>
+        import(/* webpackChunkName: "register" */ "../views/Register.vue")
+  },
+  {
     path: "/party/list",
     name: "Party-List",
     component: () =>
@@ -48,6 +53,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   const isAuthenticated = !!store.state.auth.token;
   if (to.name !== "Login" && !isAuthenticated) next({ name: "Login" });
+  else if ((to.name === "Register" || to.name === "Login") && isAuthenticated) next({ name: "Home" });
   else next();
 });
 
